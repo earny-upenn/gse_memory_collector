@@ -1,0 +1,370 @@
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;600;700&family=Inter:wght@400;600;700&display=swap');
+
+:root {
+  --bg: #111827;
+  --panel: #1f2937;
+  --panel-2: #243041;
+  --text: #f3f4f6;
+  --muted: #cbd5e1;
+  --accent: #b91c1c;
+  --accent-2: #1d4ed8;
+  --border: #374151;
+  --shadow: 0 10px 24px rgba(0, 0, 0, 0.24);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* ===== BASE ===== */
+body {
+  margin: 0;
+  font-family: "EB Garamond", serif;
+  line-height: 1.5;
+  background: linear-gradient(180deg, #0f172a, #1e293b);
+  color: var(--text);
+}
+
+/* ===== UI FONT (INTER) ===== */
+.topbar h1,
+.hud,
+.hud-item,
+.result-label,
+.result-value,
+.primary-btn,
+.secondary-btn,
+.control-btn,
+.start-overlay-card h2,
+.fact-popup-card h3,
+.fact-popup-card h4 {
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+}
+
+.app-shell {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.topbar {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.topbar h1 {
+  margin: 8px 0 4px;
+  font-size: 2rem;
+}
+
+.subtitle {
+  margin: 0;
+  color: var(--muted);
+}
+
+/* ===== LAYOUT ===== */
+.game-layout {
+  display: grid;
+  grid-template-columns: minmax(280px, 440px) 1fr;
+  gap: 16px;
+  align-items: start;
+}
+
+.game-panel,
+.side-panel .card {
+  background: rgba(31, 41, 55, 0.96);
+  border: 2px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+}
+
+.game-panel {
+  padding: 12px;
+  position: relative;
+}
+
+/* ===== HUD ===== */
+.hud {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+  font-weight: 700;
+}
+
+.hud-item {
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  padding: 8px 12px;
+  border-radius: 12px;
+  min-width: 110px;
+  text-align: center;
+}
+
+/* ===== CANVAS ===== */
+canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: linear-gradient(180deg, #93c5fd 0%, #dbeafe 55%, #bfdbfe 56%, #a7f3d0 100%);
+  border: 3px solid #0f172a;
+  border-radius: 12px;
+  image-rendering: pixelated;
+  touch-action: none;
+}
+
+/* ===== CONTROLS ===== */
+.mobile-controls {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+/* ===== BUTTONS (REFINED STYLE) ===== */
+.control-btn,
+.primary-btn,
+.secondary-btn {
+  display: inline-block;
+  border: 0;
+  border-radius: 14px;
+  padding: 12px 18px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  cursor: pointer;
+  text-decoration: none;
+  text-align: center;
+  transition: transform 120ms ease, box-shadow 120ms ease;
+}
+
+.control-btn {
+  flex: 1;
+  background: var(--accent-2);
+  color: white;
+}
+
+.primary-btn {
+  background: var(--accent);
+  color: white;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+}
+
+.secondary-btn {
+  background: #475569;
+  color: white;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Hover / Active */
+.primary-btn:hover,
+.secondary-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.35);
+}
+
+.primary-btn:active,
+.secondary-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+}
+
+/* ===== CARDS ===== */
+.side-panel {
+  min-width: 0;
+}
+
+.card {
+  padding: 18px;
+}
+
+.card h2,
+.card h3,
+.card h4 {
+  margin-top: 0;
+}
+
+.card ul {
+  padding-left: 18px;
+  color: var(--muted);
+}
+
+.hidden {
+  display: none;
+}
+
+/* ===== RESULTS ===== */
+.results-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(110px, 1fr));
+  gap: 10px;
+  margin: 16px 0;
+}
+
+.result-box {
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px;
+  text-align: center;
+}
+
+.result-label {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin-bottom: 6px;
+}
+
+.result-value {
+  font-size: 1.9rem;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.result-subtext {
+  margin-top: 8px;
+  font-size: 1rem;
+  color: var(--muted);
+}
+
+/* ===== REFLECTION TEXT ===== */
+.reflection-text {
+  color: #fde68a;
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin-top: 16px;
+}
+
+#popupReflectionText {
+  margin: 10px 0 14px;
+}
+
+/* ===== BUTTON ROWS ===== */
+.button-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  margin-top: 12px;
+}
+
+#endCard .button-row {
+  justify-content: center;
+}
+
+/* ===== POPUP ===== */
+.fact-popup {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.78);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 9999;
+}
+
+.hidden-popup {
+  display: none;
+}
+
+.fact-popup-card {
+  width: min(520px, 100%);
+  background: rgba(31, 41, 55, 0.98);
+  border: 2px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  padding: 24px;
+  text-align: center;
+}
+
+/* Fact section */
+#popupFactSection {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 12px;
+}
+
+#popupFactSection h4 {
+  margin: 0 0 8px;
+  color: #fde68a;
+}
+
+/* ===== START OVERLAY ===== */
+.start-overlay {
+  position: absolute;
+  top: 74px;
+  left: 24px;
+  right: 24px;
+  bottom: 76px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(15, 23, 42, 0.55);
+  border-radius: 12px;
+  z-index: 20;
+}
+
+.start-overlay.hidden {
+  display: none;
+}
+
+.start-overlay-card {
+  width: min(320px, 100%);
+  background: rgba(31, 41, 55, 0.96);
+  border: 2px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  padding: 20px;
+  text-align: center;
+}
+
+/* ===== FOCUS STATES ===== */
+#popupMemoryLink:focus-visible,
+#closeEndPopupBtn:focus-visible,
+#playAgainBtn:focus-visible,
+#restartBtn:focus-visible,
+#startBtn:focus-visible,
+#startBtnOverlay:focus-visible,
+.control-btn:focus-visible {
+  outline: 3px solid #fde68a;
+  outline-offset: 3px;
+}
+
+/* ===== MOBILE ===== */
+@media (max-width: 880px) {
+  .game-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .topbar h1 {
+    font-size: 1.7rem;
+  }
+
+  .button-row {
+    flex-direction: column;
+  }
+
+  .primary-btn,
+  .secondary-btn {
+    width: 100%;
+  }
+
+  /* popup override */
+  .fact-popup .button-row {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .fact-popup .primary-btn,
+  .fact-popup .secondary-btn {
+    width: auto;
+    min-width: 140px;
+  }
+
+  .start-overlay {
+    left: 18px;
+    right: 18px;
+  }
+}
