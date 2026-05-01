@@ -1,4 +1,4 @@
-const TEST_EASTER_EGG = true;
+const TEST_EASTER_EGG = false;
 
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
