@@ -238,8 +238,6 @@ function resetGame() {
 
   scoreEl.textContent = "0";
   timeEl.textContent = String(GAME_DURATION);
-  finalScoreEl.textContent = "0";
-  reflectionTextEl.textContent = "";
 
   if (popupReflectionText) {
     popupReflectionText.textContent = "";
