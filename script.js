@@ -612,7 +612,13 @@ if (endPopup) {
 }
 
 if (closeEndPopupBtn) {
-  closeEndPopupBtn.addEventListener("click", hideEndPopup);
+  closeEndPopupBtn.addEventListener("click", () => {
+    resetGame();
+
+    if (startBtnOverlay) {
+      startBtnOverlay.focus();
+    }
+  });
 }
 
 if (startBtn) {
