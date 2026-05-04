@@ -1,4 +1,4 @@
-const TEST_EASTER_EGG = true;
+const TEST_EASTER_EGG = false;
 
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
@@ -13,15 +13,6 @@ imgLeft.src = "images/ben-franklin-left.png";
 
 const imgRight = new Image();
 imgRight.src = "images/ben-franklin-right.png";
-
-imgBoth.onload = () => {
-  const scale = 0.5;
-  const aspect = imgBoth.width / imgBoth.height;
-
-  player.height = imgBoth.height * scale;
-  player.width = player.height * aspect;
-  player.x = GAME_WIDTH / 2 - player.width / 2;
-};
 
 // Order matters for animation feel
 runFrames.push(imgBoth, imgLeft, imgBoth, imgRight);
@@ -58,7 +49,6 @@ const endCard = document.getElementById("endCard");
 const leftBtn = document.getElementById("leftBtn");
 const rightBtn = document.getElementById("rightBtn");
 
-// Combined popup elements
 const endPopup = document.getElementById("endPopup");
 const popupScore = document.getElementById("popupScore");
 const popupFactSection = document.getElementById("popupFactSection");
@@ -88,7 +78,7 @@ let frameTimer = 0;
 let lastTime = 0;
 let missedItems = 0;
 
-const frameInterval = 120; // ms between frames
+const frameInterval = 120;
 
 const player = {
   x: GAME_WIDTH / 2 - (SPRITE_WIDTH * SPRITE_SCALE) / 2,
@@ -100,7 +90,19 @@ const player = {
   moveRight: false
 };
 
+imgBoth.onload = () => {
+  const scale = 0.5;
+  const aspect = imgBoth.width / imgBoth.height;
+
+  player.height = imgBoth.height * scale;
+  player.width = player.height * aspect;
+  player.x = GAME_WIDTH / 2 - player.width / 2;
+
+  draw();
+};
+
 const items = [];
+
 const counts = {
   books: 0,
   coffee: 0,
@@ -200,6 +202,7 @@ function showEndPopup(showFact, factMessage = "") {
 
 function hideEndPopup() {
   if (!endPopup) return;
+
   endPopup.style.display = "none";
   endPopup.classList.add("hidden-popup");
   endPopup.classList.remove("is-entering");
@@ -238,6 +241,12 @@ function resetGame() {
 
   scoreEl.textContent = "0";
   timeEl.textContent = String(GAME_DURATION);
+  finalScoreEl.textContent = "0";
+  bookCountEl.textContent = "0";
+  coffeeCountEl.textContent = "0";
+  capCountEl.textContent = "0";
+  cameraCountEl.textContent = "0";
+  reflectionTextEl.textContent = "";
 
   if (popupReflectionText) {
     popupReflectionText.textContent = "";
@@ -253,7 +262,44 @@ function resetGame() {
     startCard.classList.add("hidden");
   }
 
-  endCard.classList.remove("hidden");
+  if (endCard) {
+    endCard.classList.remove("hidden");
+  }
+
+  draw();
+}
+
+function continueAfterResults() {
+  gameRunning = false;
+  gameEnded = false;
+
+  clearInterval(timerInterval);
+  cancelAnimationFrame(animationFrameId);
+
+  items.length = 0;
+
+  player.x = GAME_WIDTH / 2 - player.width / 2;
+  player.y = GAME_HEIGHT - 120;
+  player.moveLeft = false;
+  player.moveRight = false;
+
+  frameIndex = 0;
+  frameTimer = 0;
+  lastTime = 0;
+
+  hideEndPopup();
+
+  if (startOverlay) {
+    startOverlay.classList.remove("hidden");
+  }
+
+  if (startCard) {
+    startCard.classList.add("hidden");
+  }
+
+  if (endCard) {
+    endCard.classList.remove("hidden");
+  }
 
   draw();
 }
@@ -291,6 +337,10 @@ function startGame() {
   scoreEl.textContent = "0";
   timeEl.textContent = String(GAME_DURATION);
   finalScoreEl.textContent = "0";
+  bookCountEl.textContent = "0";
+  coffeeCountEl.textContent = "0";
+  capCountEl.textContent = "0";
+  cameraCountEl.textContent = "0";
   reflectionTextEl.textContent = "";
 
   if (popupReflectionText) {
@@ -307,7 +357,9 @@ function startGame() {
     startCard.classList.remove("hidden");
   }
 
-  endCard.classList.add("hidden");
+  if (endCard) {
+    endCard.classList.add("hidden");
+  }
 
   timerInterval = setInterval(() => {
     timeLeft -= 1;
@@ -336,7 +388,6 @@ function endGame() {
 
   finalScoreEl.textContent = String(score);
 
-  // 4 grouped categories
   bookCountEl.textContent = String(counts.books + counts.coffee);
   coffeeCountEl.textContent = String(counts.cap + counts.ticket);
   capCountEl.textContent = String(counts.building + counts.bus);
@@ -349,6 +400,7 @@ function endGame() {
 
   if (collectedEverything) {
     const randomFact = pennFacts[Math.floor(Math.random() * pennFacts.length)];
+
     showEndPopup(
       true,
       "<em>You collected every single memory.</em><br><br><strong>You unlocked a Penn fact:</strong> " + randomFact
@@ -357,7 +409,13 @@ function endGame() {
     showEndPopup(false);
   }
 
-  endCard.classList.remove("hidden");
+  if (startCard) {
+    startCard.classList.add("hidden");
+  }
+
+  if (endCard) {
+    endCard.classList.remove("hidden");
+  }
 }
 
 function updateAnimation(deltaTime) {
@@ -388,12 +446,15 @@ function generateReflectionText() {
   if (topType === "academic") {
     return "Your run leaned toward study life, library time, and late-night coffee memories.";
   }
+
   if (topType === "milestones") {
     return "Your run highlighted major moments, celebrations, and campus events.";
   }
+
   if (topType === "campus") {
     return "Your run centered on everyday campus life, walks on Locust Walk, and Penn Bus rides.";
   }
+
   return "Your run captured social moments, friendships, and celebrations from campus life.";
 }
 
@@ -426,11 +487,15 @@ function update() {
   if (player.moveLeft) {
     player.x -= player.speed;
   }
+
   if (player.moveRight) {
     player.x += player.speed;
   }
 
-  if (player.x < 0) player.x = 0;
+  if (player.x < 0) {
+    player.x = 0;
+  }
+
   if (player.x + player.width > GAME_WIDTH) {
     player.x = GAME_WIDTH - player.width;
   }
@@ -442,6 +507,7 @@ function update() {
   const spawnDelay = maxDelay - (maxDelay - minDelay) * progress;
 
   spawnTimer += 1;
+
   if (spawnTimer > spawnDelay) {
     spawnItem();
     spawnTimer = 0;
@@ -459,15 +525,20 @@ function update() {
     const laneHalfWidth = laneHalfWidthTop + (laneHalfWidthBottom - laneHalfWidthTop) * t;
 
     const centerX = GAME_WIDTH / 2;
+
     item.x = centerX + item.baseX * (1 + Math.pow(t, 1.8) * item.spreadFactor * 3);
 
     const minSize = 12;
     const maxSize = 42;
+
     item.size = minSize + (maxSize - minSize) * t;
     item.width = item.size;
     item.height = item.size;
 
-    if (item.x < centerX - laneHalfWidth) item.x = centerX - laneHalfWidth;
+    if (item.x < centerX - laneHalfWidth) {
+      item.x = centerX - laneHalfWidth;
+    }
+
     if (item.x + item.width > centerX + laneHalfWidth) {
       item.x = centerX + laneHalfWidth - item.width;
     }
@@ -498,7 +569,10 @@ function drawBackground() {
 
 function drawPlayer() {
   const sprite = runFrames[frameIndex];
-  ctx.drawImage(sprite, player.x, player.y, player.width, player.height);
+
+  if (sprite && sprite.complete && sprite.naturalWidth > 0) {
+    ctx.drawImage(sprite, player.x, player.y, player.width, player.height);
+  }
 }
 
 function drawItems() {
@@ -574,18 +648,26 @@ function setMoveRight(isMoving) {
   player.moveRight = isMoving;
 }
 
-// Keyboard controls
 window.addEventListener("keydown", (event) => {
-  if (event.key === "ArrowLeft") setMoveLeft(true);
-  if (event.key === "ArrowRight") setMoveRight(true);
+  if (event.key === "ArrowLeft") {
+    setMoveLeft(true);
+  }
+
+  if (event.key === "ArrowRight") {
+    setMoveRight(true);
+  }
 });
 
 window.addEventListener("keyup", (event) => {
-  if (event.key === "ArrowLeft") setMoveLeft(false);
-  if (event.key === "ArrowRight") setMoveRight(false);
+  if (event.key === "ArrowLeft") {
+    setMoveLeft(false);
+  }
+
+  if (event.key === "ArrowRight") {
+    setMoveRight(false);
+  }
 });
 
-// Touch / mouse controls for mobile buttons
 ["mousedown", "touchstart"].forEach((eventName) => {
   leftBtn.addEventListener(eventName, (event) => {
     event.preventDefault();
@@ -611,7 +693,7 @@ if (endPopup) {
 
 if (closeEndPopupBtn) {
   closeEndPopupBtn.addEventListener("click", () => {
-    resetGame();
+    continueAfterResults();
 
     if (startBtnOverlay) {
       startBtnOverlay.focus();
@@ -638,5 +720,4 @@ if (playAgainBtn) {
   });
 }
 
-// Initial draw before game starts
 draw();
