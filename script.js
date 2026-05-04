@@ -252,10 +252,10 @@ function resetGame() {
   }
 
   if (startCard) {
-    startCard.classList.remove("hidden");
+    startCard.classList.add("hidden");
   }
 
-  endCard.classList.add("hidden");
+  endCard.classList.remove("hidden");
 
   draw();
 }
@@ -306,7 +306,7 @@ function startGame() {
   }
 
   if (startCard) {
-    startCard.classList.add("hidden");
+    startCard.classList.remove("hidden");
   }
 
   endCard.classList.add("hidden");
