@@ -259,11 +259,11 @@ function resetGame() {
   }
 
   if (startCard) {
-    startCard.classList.add("hidden");
+    startCard.classList.remove("hidden");
   }
 
   if (endCard) {
-    endCard.classList.remove("hidden");
+    endCard.classList.add("hidden");
   }
 
   draw();
