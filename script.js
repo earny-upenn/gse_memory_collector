@@ -396,14 +396,15 @@ function endGame() {
   const runReflection = generateReflectionText();
   reflectionTextEl.textContent = runReflection;
 
-  const collectedEverything = TEST_EASTER_EGG || (missedItems === 0 && score > 0);
+  const collectedPercent = totalMemories > 0 ? score / totalMemories : 0;
+  const collectedEnough = TEST_EASTER_EGG || collectedPercent >= 0.8;
 
-  if (collectedEverything) {
+  if (collectedEnough) {
     const randomFact = pennFacts[Math.floor(Math.random() * pennFacts.length)];
 
     showEndPopup(
       true,
-      "<em>You collected every single memory.</em><br><br><strong>You unlocked a Penn fact:</strong> " + randomFact
+      "<em>You collected at least 80% of the memories.</em><br><br><strong>You unlocked a Penn fact:</strong> " + randomFact
     );
   } else {
     showEndPopup(false);
