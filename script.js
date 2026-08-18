@@ -77,6 +77,7 @@ let frameIndex = 0;
 let frameTimer = 0;
 let lastTime = 0;
 let missedItems = 0;
+let totalMemories = 0;
 
 const frameInterval = 120;
 
@@ -313,6 +314,7 @@ function startGame() {
   spawnTimer = 0;
   items.length = 0;
   missedItems = 0;
+  totalMemories = 0;
   gameRunning = true;
   gameEnded = false;
 
@@ -482,6 +484,8 @@ function spawnItem() {
     color: choice.color,
     emoji: choice.emoji
   });
+
+  totalMemories += 1;
 }
 
 function update() {
